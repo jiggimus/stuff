@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BRB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+    html, body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: transparent;
+    }
+
+    #logo {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        user-select: none;
+        font-family: 'Baloo 2', sans-serif;
+        font-weight: 800;
+        font-size: 64px;
+        color: #fff;
+        padding: 28px 56px;
+        border-radius: 999px;
+        transition: background-color .35s ease, box-shadow .35s ease;
+    }
+</style>
+</head>
+<body>
+<div id="logo">BRB</div>
+
+<script>
+    const speed = 180;
+    const colors = [
+        "#f7a8c4", "#b5ead7", "#c7ceea", "#ffdac1",
+        "#e2b6ff", "#a0e7e5", "#fdffb6", "#ffc6ff"
+    ];
+
+    const logo = document.getElementById("logo");
+    let ci = Math.floor(Math.random() * colors.length);
+
+    function paint() {
+        const c = colors[ci];
+        logo.style.backgroundColor = c;
+        logo.style.boxShadow = `0 0 28px ${c}, 0 8px 20px rgba(0,0,0,.2)`;
+    }
+    paint();
+
+    let w = logo.offsetWidth;
+    let h = logo.offsetHeight;
+    let x = Math.random() * (innerWidth - w);
+    let y = Math.random() * (innerHeight - h);
+    let dx = Math.random() < .5 ? -1 : 1;
+    let dy = Math.random() < .5 ? -1 : 1;
+
+    addEventListener("resize", () => {
+        w = logo.offsetWidth;
+        h = logo.offsetHeight;
+    });
+
+    let last = performance.now();
+
+    function tick(now) {
+        const dt = (now - last) / 1000;
+        last = now;
+
+        x += dx * speed * dt;
+        y += dy * speed * dt;
+
+        let bounced = false;
+        if (x <= 0)              { x = 0; dx = 1; bounced = true; }
+        if (x >= innerWidth - w) { x = innerWidth - w; dx = -1; bounced = true; }
+        if (y <= 0)              { y = 0; dy = 1; bounced = true; }
+        if (y >= innerHeight - h) { y = innerHeight - h; dy = -1; bounced = true; }
+
+        if (bounced) {
+            ci = (ci + 1) % colors.length;
+            paint();
+        }
+
+        logo.style.transform = `translate(${x}px, ${y}px)`;
+        requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+</script>
+</body>
+</html>
